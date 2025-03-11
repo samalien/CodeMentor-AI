@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script>
+    // Création de la scène
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lumière
+    const light = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(light);
+
+    // Charger le modèle 3D du robot
+    const loader = new THREE.GLTFLoader();
+    loader.load('models/robot.glb', function (gltf) {
+        const robot = gltf.scene;
+        robot.scale.set(1, 1, 1);
+        scene.add(robot);
+
+        // Animer le robot (exemple : rotation)
+        function animate() {
+            requestAnimationFrame(animate);
+            robot.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+    });
+
+    camera.position.z = 5;
+
+    // Recevoir des messages depuis l'Android WebView
+    window.addEventListener("message", function(event) {
+        if (event.data === "wave") {
+            console.log("Robot doit bouger !");
+            // Ici, tu peux ajouter une animation spécifique au robot
+        }
+    }, false);
+</script>
+</body>
+</html>
